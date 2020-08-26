@@ -1,17 +1,21 @@
 # Smallest base image
-FROM alpine:3.5
+FROM alpine:3.12
 
-MAINTAINER John Felten<john.felten@gmail.com>
+ARG BUILD_DATE
 
-ADD VERSION .
+LABEL maintainer Ahmetcan Güvendiren <ahm@glacion.com>
+LABEL org.label-schema.build-date $BUILD_DATE
+LABEL org.label-schema.name openvpn
+LABEL org.label-schema.description Openvpn server in docker
+LABEL org.label-schema.url https://github.com/glacion/openvpn-docker
+LABEL org.label-schema.vcs-url https://github.com/glacion/openvpn-docker
+LABEL org.label-schema.version 2.4.0
 
 # Install needed packages
-RUN echo "http://dl-4.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
-    echo "http://dl-4.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
-    apk update && apk add openssl easy-rsa openvpn iptables bash && \
-    rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
+RUN apk update
+RUN apk add openssl easy-rsa openvpn iptables bash
+RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
 # Configure tun
-RUN mkdir -p /dev/net && \
-     mknod /dev/net/tun c 10 200 
+RUN mkdir -p /dev/net && mknod /dev/net/tun c 10 200 
 
